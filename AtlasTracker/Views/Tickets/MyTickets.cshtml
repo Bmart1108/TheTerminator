@@ -1,0 +1,143 @@
+﻿@model IEnumerable<Ticket>
+@using AtlasTracker.Models.Enums
+@using AtlasTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+@inject IBTProjectService ProjectService
+@inject UserManager<BTUser> UserManager
+
+  @{
+
+    BTUser btUser = await UserManager.GetUserAsync(User);
+
+
+}
+<header class="page-header">
+    <h2>My Tickets</h2>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                           
+
+            </li>
+
+            <li><span>Layouts</span></li>
+
+            <li><span>Default</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
+    </div>
+</header>
+
+<div class="row">
+    <div class="col">
+
+        <section class="card">
+            <header class="card-header">
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                </div>
+                
+                    <h2 class="card-title"></h2>
+                    <div class="d-flex mt-2">
+                    <button type="button" class="float-right mb-1 mt-1 me-1 btn btn-success">Create New Ticket</button>
+                </div>
+            </header>
+
+            <div class="card-body">
+
+                <table class="table table-bordered table-striped mb-0" id="datatable-tabletools">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Created)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Updated)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.Project)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.TicketPriority)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TicketStatus)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.DeveloperUser)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Created)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Project.Name)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TicketPriority.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TicketStatus.Id)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DeveloperUser.Id)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+
+<!-- Theme Base, Components and Settings -->
+<script src="~/template/js/theme.js"></script>
+
+<!-- Theme Custom -->
+<script src="~/template/js/custom.js"></script>
+
+<!-- Theme Initialization Files -->
+<script src="~/template/js/theme.init.js"></script>
+
+
+<script src="~/template/js/examples/examples.datatables.default.js"></script>
+<script src="~/template/js/examples/examples.datatables.row.with.details.js"></script>
+<script src="~/template/js/examples/examples.datatables.tabletools.js"></script>
+

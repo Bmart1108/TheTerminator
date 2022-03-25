@@ -1,0 +1,117 @@
+﻿@model IEnumerable<AtlasTracker.Models.Notification>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<header class="page-header">
+    <h2>Notifications</h2>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>Notifications</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-bs-open="sidebar-right"></a>
+    </div>
+</header>
+
+<div class="col">
+    <div class="card card-featured card-featured-info">
+        <div class="card-header">
+            <h3>Notifications</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table  table-bordered table-striped mb-0" id="datatable-atlas">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Message)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Created)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Viewed)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NotificationType)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Ticket)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Recipient)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Sender)
+                            </th>                       
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Message)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Created)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Viewed)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NotificationType.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Ticket.Id)  
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Recipient.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Sender.FullName)
+                                </td>                             
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+
+
+    var datatableInit = function() {
+
+        $('#datatable-atlas').dataTable({
+
+        });
+
+    };
+
+    $(function() {
+        datatableInit();
+    });
+
+</script>
+
+
+}

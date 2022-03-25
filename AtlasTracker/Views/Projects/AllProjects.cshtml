@@ -1,0 +1,136 @@
+﻿@model IEnumerable<AtlasTracker.Models.Project>
+@using AtlasTracker.Models.Enums
+@using AtlasTracker.Services.Interfaces
+
+@inject IBTProjectService ProjectService
+@{
+    ViewData["Title"] = "AllProjects";
+}
+
+
+
+<header class="page-header">
+    <h2>All Projects</h2>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>All Projects</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-bs-open="sidebar-right"></a>
+    </div>
+</header>
+
+
+<div class="card card-featured card-featured-info">
+    <div class="card-header">
+        <h2 class="fw-bold">All Projects</h2>
+    </div>
+    <div class="card-body">
+        <div>
+            <div class="table-responsive">
+                <table class="table  table-bordered table-striped mb-0" id="datatable-atlas">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreatedDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.StartDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EndDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Archived)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Company)
+                            </th>
+                            <th>
+                                Priority
+                            </th>
+                            <th>
+                                Project Manager
+                            </th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EndDate)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Archived)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Company.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
+                                </td>
+                                <td>
+                                    @((await ProjectService.GetProjectManagerAsync(item.Id))?.FullName)
+                                </td>
+                                <td>
+
+                                    <a class="far fa-lg fa-eye p-2" style="color: green" asp-action="Details" asp-route-id="@item.Id"></a>
+
+                                    @if (User.IsInRole(nameof(BTRole.Admin)))
+                                    {
+                                        <a class="fas fa-lg fa-pencil-alt p-2" style="color: tan" asp-action="Edit" asp-route-id="@item.Id"></a>
+                                        <a class="far fa-lg fa-trash-alt p-2" style="color: red" asp-action="Archive" asp-route-id="@item.Id"></a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+
+
+    var datatableInit = function() {
+
+        $('#datatable-atlas').dataTable({
+
+        });
+
+    };
+
+    $(function() {
+        datatableInit();
+    });
+
+</script>
+
+
+}

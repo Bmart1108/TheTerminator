@@ -1,0 +1,50 @@
+﻿@model AtlasTracker.Models.ViewModels.AssignDeveloperViewModel
+
+@{
+    ViewData["Title"] = "Assign Developer";
+}
+
+<header class="page-header">
+    <h2>Assign Developer</h2>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>Assign Developer</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
+    </div>
+</header>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post" asp-action="AssignDeveloper" asp-controller="Tickets">
+                <input hidden asp-for="Ticket!.Id" />
+                <div class="card card-featured card-featured-info">
+                    <div class="card-header">
+                        <h2 class="w-50 fw-bold">Ticket Title:</h2>
+                        <h3 class="fw-semibold">@Model.Ticket!.Title</h3>
+                        <h4 class="fw-semibold">@Model.Ticket.Description</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <h3 class="control-label" style="color:deepskyblue">Assign Developer:</h3>
+                        <select style="font-size:large" asp-for="DeveloperId" class="form-control" asp-items="@Model.DeveloperList">
+                        </select>
+                        <input type="submit" value="Assign" class="btn btn-primary mt-5" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

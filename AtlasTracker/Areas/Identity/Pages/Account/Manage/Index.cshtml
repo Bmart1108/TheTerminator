@@ -1,0 +1,152 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+    Layout = null;
+}
+
+  <!--Favicon-->
+    <link rel="apple-touch-icon" sizes="180x180" href="~/img/BMAPPTOUCHICON.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/img/BMFAVICON32x32.png">
+
+<!doctype html>
+<html class="fixed">
+<head>
+
+    <!-- Basic -->
+    <meta charset="UTF-8">
+
+    <meta name="keywords" content="HTML5 Admin Template" />
+    <meta name="description" content="Porto Admin - Responsive HTML5 Template">
+    <meta name="author" content="okler.net">
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Web Fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="/template/vendor/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="/template/vendor/animate/animate.compat.css">
+    <link rel="stylesheet" href="/template/vendor/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="/template/vendor/boxicons/css/boxicons.min.css" />
+    <link rel="stylesheet" href="/template/vendor/magnific-popup/magnific-popup.css" />
+    <link rel="stylesheet" href="/template/vendor/bootstrap-datepicker/css/bootstrap-datepicker3.css" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="/template/css/theme.css" />
+
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="/template/css/skins/default.css" />
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="/template/css/custom.css">
+
+    <!-- Head Libs -->
+    <script src="/template/vendor/modernizr/modernizr.js"></script>
+
+</head>
+
+
+<!-- start: page -->
+<section class="body-sign">
+    <div class="center-sign">
+        <a class="logo float-left">
+            <img width="70px" height="70px" src="~/img/Brandon MartinWhiteLOGO1.png" />
+            <img width="50px" height="50px" src="~/img/BM SIGNATURE.png" />
+        </a>
+        <partial name="_StatusMessage" for="StatusMessage" />
+        <div class="panel card-sign">
+            <div class="card-title-sign mt-3 text-end">
+                <h2 id="customH2" class="title text-uppercase font-weight-bold m-0"><i class="bx bx-user-circle me-1 text-6 position-relative top-5"></i>Manage  Profile</h2>
+            </div>
+        </div>
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="card-body">
+                <div class="form-floating">
+                    <input asp-for="Username" class="form-control" />
+                    <label asp-for="Username" class="form-label"></label>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.FirstName" class="form-control" />
+                    <label asp-for="Input.FirstName" class="form-label"></label>
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.LastName" class="form-control" />
+                    <label asp-for="Input.LastName" class="form-label"></label>
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                    <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+                <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+
+
+                <div class="col-md-3">
+                    <div asp-validation-summary="ModelOnly" class="text-danger">
+                    </div>
+                </div>
+
+                <div class="form-floating mt-3">
+                    <h5 class=fw-bold>Update Avatar</h5>
+
+                    @if (Model.Input.AvatarData != null)
+                    {
+                        <img id="avatarFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="data:image/*;base64,@(Convert.ToBase64String(Model.Input.AvatarData))">
+                    }
+                    else
+                    {
+                        <img id="avatarFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="https://cdn.icon-icons.com/icons2/2331/PNG/512/task_software_platform_management_project_icon_142266.png">
+                    }
+
+                    <input type="file" asp-for="Input.AvatarFormFile" class="form-control" accept=".png,.jpg,.jpeg..gif,.tif"
+                           style="border: 1px!!important;padding: 0px;padding-top: 15px;padding-bottom: 15px;padding-left: 5px"
+                           onchange="document.getElementById('avatarFileData').src = window.URL.createdObjectURL(this.files[0])" />
+                    <span asp-validation-for="Input.AvatarFormFile" class="class-danger"></span>
+                </div>
+            </div>
+            <div>
+                <div class="">
+                    <p class="text-center"> <a asp-action="Dashboard" asp-controller="Home">Return to Dashboard</a></p>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+
+<!-- end: page -->
+<!-- Vendor -->
+<script src="/template/vendor/jquery/jquery.js"></script>
+<script src="/template/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+<script src="/template/vendor/popper/umd/popper.min.js"></script>
+<script src="/template/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/template/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script src="/template/vendor/common/common.js"></script>
+<script src="/template/vendor/nanoscroller/nanoscroller.js"></script>
+<script src="/template/vendor/magnific-popup/jquery.magnific-popup.js"></script>
+<script src="/template/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+<!-- Specific Page Vendor -->
+<!-- Theme Base, Components and Settings -->
+<script src="/template/js/theme.js"></script>
+
+<!-- Theme Custom -->
+<script src="/template/js/custom.js"></script>
+
+<!-- Theme Initialization Files -->
+<script src="/template/js/theme.init.js"></script>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}
+
+
+</html>

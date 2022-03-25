@@ -1,0 +1,403 @@
+﻿@model AtlasTracker.Models.DashboardViewModel
+
+@using AtlasTracker.Models.Enums
+@using AtlasTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<BTUser> UserManager
+@inject IBTProjectService projectService
+@inject IBTRolesService RolesService
+
+@{
+    ViewData["Title"] = "Dashboard";
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    BTUser projectManager = await projectService.GetProjectManagerAsync(Model.Company.Id);
+
+}
+
+
+<!-- Styles -->
+<style>
+    .amDark {
+        background-color: #30303d;
+        color: #fff;
+    }
+
+    #chartdiv {
+        width: 100%;
+        height: 500px;
+    }
+</style>
+<header class="page-header">
+    <h2>Dashboard</h2>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>Dashboard</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-bs-open="sidebar-right"></a>
+    </div>
+</header>
+
+<div class="row py-5">
+    <div class="col-xl-3 col-lg-6 col-md-12">
+        <div class="card card-featured card-featured-info">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7">
+                        <div class="mt-0 text-left">
+                            <span class="fs-16 font-weight-semibold">All Projects</span>
+                            <h3 class="mb-0 mt-1 text-black fs-25" style="font-size:x-large">@Model.Projects.Count</h3>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="icon1 text-black my-auto  float-right"> <i class="fa fa-2x py-3 fa-briefcase" style="color:black"></i> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-12">
+        <div class="card card-featured card-featured-info">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7">
+                        <div class="mt-0 text-left">
+                            <span class="fs-16 font-weight-semibold">Total Tickets</span>
+                            <h3 class="mb-0 mt-1 text-primary fs-25" style="font-size: x-large">@Model.Tickets!.Count</h3>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="icon1 text-primary my-auto  float-right"> <i class="fa fa-2x py-3 fa-briefcase" style="color:blue"></i> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-12">
+        <div class="card card-featured card-featured-info">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7">
+                        <div class="mt-0 text-left">
+                            <span class="fs-16 font-weight-semibold">Resolved Tickets</span>
+                                @{                       
+                                List<Ticket> resolved = Model.Tickets.Where(t => t.TicketStatusId  == 4).ToList();                               
+                            }
+                            <h3 class="mb-0 mt-1 text-success fs-25" style="font-size:x-large">@resolved.Count</h3>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="icon1 text-success my-auto  float-right"> <i class="fa fa-2x py-3 fa-check" style="color:green"></i> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-12">
+        <div class="card card-featured card-featured-info">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7">
+                        <div class="mt-0 text-left">
+                            <span class="fs-16 font-weight-semibold">Unassigned Tickets</span>
+                            <h3 class="mb-0 mt-1 text-danger fs-25" style="font-size:x-large">@Model.Tickets!.Where(t => string.IsNullOrEmpty(t.DeveloperUserId)).Count()</h3>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="icon1 text-warning my-auto  float-right"> <i class="fa fa-2x py-3 fa-bullhorn" style="color:red"></i> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Row -->
+<!-- Row -->
+<div class="row clearfix">
+    <div class="col-lg-4 col-md-6">
+        <div class="card card-featured card-featured-info">
+            <div class="card-body">
+                <h4>Projects By Priority</h4>
+                <div id="pie">
+                </div>
+            </div>
+        </div>
+    </div>
+@*    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4>Ticket Status</h4>
+                <div id="">
+                </div>
+            </div>
+        </div>
+    </div>*@
+    <div class="col-lg-4 col-md-6">
+        <div class="card card-featured card-featured-info">
+            <div class="card-body">
+                <h4>Project Tickets Count (%)</h4>
+                <div id="donut">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6">
+        <div class="card card-featured card-featured-info">
+            <div class="card-body">
+                <h4>Tickets By Priority</h4>
+                <div id="chart3D">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Row -->
+<!-- Row -->
+<div class="row">
+    <div class="col-lg-4 col-md-6">
+        <div class="card card-featured card-featured-info card-line">
+            <div class="card-body p-5">
+                <div class="mt-0 text-left">
+                    <div class="text-center mb-5">
+                        <h4>Company Data</h4>
+                        <h6>@Model.Company.Name</h6>
+                    </div>
+                    <div class="row mt-5 mb-5">
+                        <div class="col-6">
+                            <i class="fas fa-4x fa-user-friends px-5"></i><strong class="text-blue px-5">Members</strong>
+                        </div>
+                        <div class="col-6 text-right px-5 mt-3">
+                            <p class="badge badge-pill badge-primary" style="font-size: 1.5em"><strong>@Model.Members.Count</strong></p>
+                        </div>
+                    </div>
+                    <div class="row mt-5 mb-5">
+                        <div class="col-6">
+                            <i class="fas fa-4x fa-project-diagram px-5 mt-3"></i><strong class="text-blue px-5">Projects</strong>
+                        </div>
+                        <div class="col-6 text-right px-5">
+                            <p class="badge badge-pill badge-success mt-3" style="font-size: 1.5em"><strong>@Model.Projects.Count</strong></p>
+                        </div>
+                    </div>
+                    <div class="row mt-5 mb-5">
+                        <div class="col-6">
+                            <i class="fas fa-4x fa-ticket-alt px-5"></i><strong class="text-blue px-5">Tickets</strong>
+                        </div>
+                        <div class="col-6 text-right px-5">
+                            <p class="badge badge-pill badge-danger mt-2" style="font-size: 1.5em"><strong>@Model.Tickets.Count</strong></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8 col-md-12 col-sm-12">
+        <div class="card card-featured card-featured-info card-line">
+            <div class="card-header border-bottom-0">
+                <h3 class="card-title">Project List</h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table id="details-datatable" class="table table-hover card-table table-vcenter text-nowrap mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                                <th scope="col">Team</th>
+                                <th scope="col">Ticket Count</th>
+                                <th scope="col">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Project project in Model.Projects!.OrderByDescending(d => d.EndDate))
+                            {
+                                if (project.Archived == false)
+                                {
+                                    <tr>
+                                        <th scope="row">
+                                            @project.Name
+                                        </th>
+                                        <td>
+                                            @project.StartDate.ToString("MMM dd, yyyy")
+                                        </td>
+                                        <td>
+                                            @project.EndDate.ToString("MMM dd, yyyy")
+                                        </td>
+                                        <td>
+                                            <div class="avatar-list avatar-list-stacked">
+                                                @foreach (BTUser member in project.Members.Cast<BTUser>().Take(6))
+                                                {
+                                                    <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" width="28" height="28" class="rounded-circle">
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @project.Tickets.Count
+                                        </td>
+                                        <td>
+                                            <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id"><i class="far fa-lg fa-eye p-2" style="color: green"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            <tr class="mt-5 p-5">
+                                <td>
+                                    <a asp-action="AllProjects" asp-controller="Projects">See all...</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+@section scripts{
+
+<script>
+    var message = '@(ViewBag.SwalMessage)';
+    if(message != '')
+    {
+        Swal.fire({
+            icon: 'success',
+            title: message,
+            showConfirmButton: true
+        })
+    }
+</script>
+
+<script type="text/javascript">
+    google.load("visualization", "1", { packages: ["corechart"] });
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/GglProjectPriority",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var data = google.visualization.arrayToDataTable(result);
+
+                //3D Pie
+                var options = {
+                    title: 'Project Priority',
+                    is3D: true,
+                    chartArea: { left: 0,bottom: 15,width: '100%', height: '100%'},
+                    legend: { position: 'bottom' }
+
+                };
+
+                var chart = new google.visualization.PieChart($("#pie")[0]);
+                chart.draw(data, options);
+            },
+            failure: function (rresult) {
+                alert(result.d);
+            },
+            error: function (result) {
+                alert(result.d);
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    google.load("visualization", "1", { packages: ["corechart"] });
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+    $.ajax({
+    type: "POST",
+    url: "/Home/GglProjectTickets",
+    data: '{}',
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (result) {
+    var data = google.visualization.arrayToDataTable(result);
+
+    //Donut
+    var options = {
+    title: 'Company Ticket Distribution',
+    pieHole: 0.3,
+    chartArea: { left: 0,bottom: 15,width: '100%', height: '100%'},
+    legend: { position: 'bottom' }
+    };
+    var chart = new google.visualization.PieChart($("#donut")[0]);
+    chart.draw(data, options);
+    },
+    failure: function (rresult) {
+    alert(result.d);
+    },
+    error: function (result) {
+    alert(result.d);
+    }
+    });
+    }
+</script>
+
+<script type="text/javascript">
+    google.load("visualization", "1", { packages: ["corechart"] });
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/GglTicketPriority",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var data = google.visualization.arrayToDataTable(result);
+
+                //3D Pie
+                var options = {
+                    title: 'Ticket Priority',
+                    is3D: true,
+                    chartArea: { left: 0,bottom: 15,width: '100%', height: '100%'},
+                    legend: { position: 'bottom' }
+
+                };
+
+                var chart = new google.visualization.PieChart($("#chart3D")[0]);
+                chart.draw(data, options);
+            },
+            failure: function (rresult) {
+                alert(result.d);
+            },
+            error: function (result) {
+                alert(result.d);
+            }
+        });
+    }
+</script>
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+<!-- end: page -->

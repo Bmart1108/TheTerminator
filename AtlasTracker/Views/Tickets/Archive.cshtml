@@ -1,0 +1,98 @@
+﻿@model AtlasTracker.Models.Ticket
+
+@{
+    ViewData["Title"] = "Archive";
+}
+
+<header class="page-header">
+    <h2>Archive Ticket</h2>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>Archive Ticket</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
+    </div>
+</header>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card card-featured card-featured-info">
+            <div class="card-header">
+                <h2 class="fw-bold">Archive Ticket</h2>
+                <h4 class="fw-semibold">Are you sure you want to Archive this Ticket?</h4>
+            </div>
+            <div class="card-body">
+               <div class="form-group row pb-3">
+            <label class="col-sm-3 control-label text-sm-end pt-2 fw-bold"> @Html.DisplayNameFor(model => model.Title) :</label>
+            <div class="col-sm-6 pb-3 pt-2">
+                @Html.DisplayFor(model => model.Title)
+            </div>
+        </div>
+        <div class="form-group row pb-3">
+            <label class="col-sm-3 control-label text-sm-end pt-2 fw-bold">@Html.DisplayNameFor(model => model.Description) :</label>
+            <div class="col-sm-6 pb-3 pt-2">
+                @Html.DisplayFor(model => model.Description)
+            </div>
+        </div>
+        <div class="form-group row pb-3">
+            <label class="col-sm-3 control-label text-sm-end pt-2 fw-bold">@Html.DisplayNameFor(model => model.Created) :</label>
+            <div class="col-sm-6 pb-3 pt-2">
+                @Html.DisplayFor(model => model.Created)
+            </div>
+        </div>
+        <div class="form-group row pb-3">
+            <label class="col-sm-3 control-label text-sm-end pt-2 fw-bold">@Html.DisplayNameFor(model => model.Updated) :</label>
+            <div class="col-sm-6 pb-3 pt-2">
+                @Html.DisplayFor(model => model.Updated)
+            </div>
+        </div>
+        <div class="form-group row pb-3">
+            <label class="col-sm-3 control-label text-sm-end pt-2 fw-bold">@Html.DisplayNameFor(model => model.Archived) :</label>
+            <div class="col-sm-6 pb-3 pt-2">
+                @Html.DisplayFor(model => model.Archived)
+            </div>
+        </div>
+        <div class="form-group row pb-3">
+            <label class="col-sm-3 control-label text-sm-end pt-2 fw-bold">@Html.DisplayNameFor(model => model.Project) :</label>
+            <div class="col-sm-6 pb-3 pt-2">
+                @Html.DisplayFor(model => model.Project.Name)
+            </div>
+        </div>
+        <div class="form-group row pb-3">
+            <label class="col-sm-3 control-label text-sm-end pt-2 fw-bold">@Html.DisplayNameFor(model => model.TicketType) :</label>
+            <div class="col-sm-6 pb-3 pt-2">
+                @Html.DisplayFor(model => model.TicketType.Name)
+            </div>
+        </div>
+                <footer class="card-footer">
+                    <div class="row justify-content-start">
+                        <div class="col-sm-9">
+                            <form asp-action="Archive">
+                                <input type="hidden" asp-for="Id" />
+                                <input type="submit" value="Archive" class="btn btn-danger" />                               
+                            </form>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

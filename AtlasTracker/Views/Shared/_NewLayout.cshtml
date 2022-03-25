@@ -1,0 +1,405 @@
+﻿@using AtlasTracker.Models.Enums
+@using Microsoft.AspNetCore.Identity
+@using AtlasTracker.Services.Interfaces
+
+@inject UserManager<BTUser> UserManager
+@inject IBTNotificationService Notifications
+@inject IBTRolesService Roles
+@inject IBTProjectService Projects
+
+    @{
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    List<Notification> notifications = (await Notifications.GetReceivedNotificationsAsync(btUser.Id));
+    List<Project> projects = (await Projects.GetAllProjectsByCompanyAsync(btUser.CompanyId));
+}
+
+
+<!doctype html>
+<html class="fixed">
+
+<head>
+    <!-- Basic -->
+    <meta charset="UTF-8">
+    <title>The Terminator | Issue Tracking Application</title>
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Web Fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="/template/vendor/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="/template/vendor/animate/animate.compat.css">
+    <link rel="stylesheet" href="/template/vendor/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="/template/vendor/boxicons/css/boxicons.min.css" />
+    <link rel="stylesheet" href="/template/vendor/magnific-popup/magnific-popup.css" />
+    <link rel="stylesheet" href="/template/vendor/bootstrap-datepicker/css/bootstrap-datepicker3.css" />
+    <link rel="stylesheet" href="/template/vendor/jquery-ui/jquery-ui.css" />
+    <link rel="stylesheet" href="/template/vendor/jquery-ui/jquery-ui.theme.css" />
+    <link rel="stylesheet" href="/template/vendor/bootstrap-multiselect/css/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="/template/vendor/select2/css/select2.css" />
+    <link rel="stylesheet" href="/template/vendor/select2-bootstrap-theme/select2-bootstrap.min.css" />
+    <link rel="stylesheet" href="/template/vendor/morris/morris.css" />
+    <link rel="stylesheet" href="/template/vendor/datatables/media/css/dataTables.bootstrap5.css" />
+
+
+
+
+    <!--Favicon-->
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/BMAPPTOUCHICON.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/BMFAVICON32x32.png">
+
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="/template/css/theme.css" />
+
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="/template/css/skins/default.css" />
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="/template/css/custom.css">
+
+    <!-- Head Libs -->
+    <script src="/template/vendor/modernizr/modernizr.js"></script>
+
+</head>
+
+<body class="alternative-font-4 loading-overlay-showing" data-plugin-page-transition data-loading-overlay data-plugin-options="{'hideDelay': 100}">
+    <div class="loading-overlay" style="background-color:deepskyblue">
+        <div class="bounce-loader">
+            <div class="bounce1" style="background-color:purple"></div>
+            <div class="bounce2" style="background-color:greenyellow"></div>
+            <div class="bounce3" style="background-color:orange"></div>
+        </div>
+    </div>
+    <div class="status">Loading<span class="status__dot">.</span><span class="status__dot">.</span><span class="status__dot">.</span></div>
+
+    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Landing", "Home", new { area = "" })">
+    </form>
+    <section class="body">
+
+        <!-- start: header -->
+        <header class="header">
+            <div class="logo-container">
+                <a asp-action="Dashboard" asp-controller="Home" class="logo">
+                    <img src="/img/Brandon MartinWhiteLOGO1.png" width="65" height="40" alt="BMLogo" />
+                    <img src="/img/BM SIGNATURE.png" width="60" height="35" alt="Porto Admin" />
+                </a>
+
+                <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                    <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
+                </div>
+
+            </div>
+
+            <!-- start: search & user box -->
+            <div class="header-right">
+
+                <span class="separator"></span>
+
+                <ul class="notifications">
+                    <li>
+                        <a href="#" class="dropdown-toggle notification-icon" data-bs-toggle="dropdown">
+                            <i class="bx bx-bell"></i>
+                            <span class="badge">@(notifications.Count)</span>
+                        </a>
+                        <div class="dropdown-menu notification-menu">
+                            <div class="notification-title">
+                                <span class="float-end badge badge-default">@(notifications.Count)</span>
+                                Notifications
+                            </div>
+                            <div class="content">
+                                <ul>
+                                        @foreach (var notification in notifications)
+                                        {
+                                                <li>
+                                                    <a href="#" class="clearfix">
+                                                        <div class="image">
+                                                            <i class="fas fa-thumbs-down bg-danger text-light"></i>
+                                                        </div>
+                                                        <span class="title">@notification.Sender!.FullName</span>
+                                                        <span class="message">@notification.Created.ToString("MM.dd.yyyy - hh:mm:ss")</span>
+                                                    </a>
+                                                </li>
+                                        }
+                                </ul>
+                                <hr />
+                                <div class="text-end">
+                                    <a asp-action="Index" asp-controller="Notifications" class="view-more">View All</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <span class="separator"></span>
+
+                <div id="userbox" class="userbox">
+                    <a href="#" data-bs-toggle="dropdown">
+                        <figure class="profile-picture">
+                                @if (btUser.AvatarData != null)
+                                {
+                                        <img src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarData))">
+                                }
+                                else
+                                {
+                                        <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="@btUser?.FullName" class="rounded-circle" />
+                                }
+                        </figure>
+                        <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
+                            <span class="name">@btUser?.FullName</span>
+                            <span class="role">@((await UserManager.GetRolesAsync(btUser)).FirstOrDefault()).</span>
+                        </div>
+
+                        <i class="fa custom-caret"></i>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <ul class="list-unstyled mb-2">
+                            <li class="divider"></li>
+                            <li>
+                                <a role="menuitem" tabindex="-1" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="bx bx-user-circle"></i> My Profile</a>
+                            </li>
+                            <li>
+                                <a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit();"><i class="bx bx-power-off"></i> Sign Out</a>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- end: search & user box -->
+        </header>
+        <!-- end: header -->
+
+        <div class="inner-wrapper">
+            <!-- start: sidebar -->
+            <aside id="sidebar-left" class="sidebar-left">
+
+                <div class="sidebar-header">
+                    <div class="sidebar-title">
+                        Navigation
+                    </div>
+                    <div class="sidebar-toggle d-none d-md-block" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+                        <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
+                    </div>
+                </div>
+
+                <div class="nano">
+                    <div class="nano-content">
+                        <nav id="menu" class="nav-main" role="navigation">
+
+                            <ul class="nav nav-main">
+                                <li>
+                                    <a asp-action="Dashboard" asp-controller="Home" class="nav-link">
+                                        <i class="bx bx-home-alt" aria-hidden="true"></i>
+                                        <span>Dashboard</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-parent">
+                                    <a class="nav-link" href="#">
+                                        <i class="bx bx-briefcase" aria-hidden="true"></i>
+                                        <span>Projects</span>
+                                    </a>
+                                    <ul class="nav nav-children">
+                                        <li>
+                                            <a asp-action="Create" asp-controller="Projects" class="nav-link">
+                                                Create New
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-action="AllProjects" asp-controller="Projects" class="nav-link">
+                                                All Projects
+                                            </a>
+                                        </li>
+
+                                            @if (User.IsInRole(nameof(BTRole.Developer)) || User.IsInRole(nameof(BTRole.Submitter)))
+                                            {
+                                                    <li>
+                                                        <a asp-action="MyProjects" asp-controller="Projects" class="nav-link">
+                                                            My Projects
+                                                        </a>
+                                                    </li>
+                                            }
+                                            @if (User.IsInRole(nameof(BTRole.Admin)) || User.IsInRole(nameof(BTRole.ProjectManager)))
+                                            {
+                                                    <li>
+                                                        <a asp-action="UnassignedProjects" asp-controller="Projects" class="nav-link">
+                                                            Unassigned Projects
+                                                        </a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a asp-action="ArchivedProjects" asp-controller="Projects" class="nav-link">
+                                                            Archived Projects
+                                                        </a>
+                                                    </li>
+                                            }
+                                    </ul>
+                                </li>
+
+
+
+                                <li class="nav-parent">
+                                    <a class="nav-link" href="#">
+                                        <i class="bx bx-layout" aria-hidden="true"></i>
+                                        <span>Tickets</span>
+                                    </a>
+                                    <ul class="nav nav-children">
+                                        <li>
+                                            <a asp-action="Create" asp-controller="Tickets" class="nav-link">
+                                                Create New
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-action="AllTickets" asp-controller="Tickets" class="nav-link">
+                                                All Tickets
+                                            </a>
+                                        </li>
+                                            @if (User.IsInRole(nameof(BTRole.Admin)) || User.IsInRole(nameof(BTRole.ProjectManager)))
+                                            {
+                                                    <li>
+                                                        <a asp-action="UnassignedTickets" asp-controller="Tickets" class="nav-link">
+                                                            Unassigned Tickets
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a asp-action="ArchivedTickets" asp-controller="Tickets" class="nav-link">
+                                                            Archived Tickets
+                                                        </a>
+                                                    </li>
+                                            }
+                                    </ul>
+
+
+                                </li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                            <li class="nav-parent ">
+                                                <a class="nav-link">
+                                                    <i class="bx bx-lock-alt" aria-hidden="true"></i>
+                                                    <span>Admin</span>
+                                                </a>
+                                                <ul class="nav nav-children">
+                                                    <li>
+                                                        <a asp-action="ManageUserRoles" asp-controller="UserRoles" class="nav-link">
+                                                            Manage Roles
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a asp-action="Create" asp-controller="Invites" class="nav-link">
+                                                            Create New Invite
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                    }
+                            </ul>
+                        </nav>
+
+
+                    </div>
+
+                    <script>
+                        // Maintain Scroll Position
+                        if (typeof localStorage !== 'undefined') {
+                            if (localStorage.getItem('sidebar-left-position') !== null) {
+                                var initialPosition = localStorage.getItem('sidebar-left-position'),
+                                    sidebarLeft = document.querySelector('#sidebar-left .nano-content');
+
+                                sidebarLeft.scrollTop = initialPosition;
+                            }
+                        }
+                    </script>
+                </div>
+            </aside>
+
+            <!-- end: sidebar -->
+
+            <section role="main" class="content-body">
+                    @RenderBody()
+            </section>
+        </div>
+    </section>
+
+
+
+    <!-- Vendor -->
+    <!-- Vendor -->
+    <script src="/template/vendor/jquery/jquery.js"></script>
+    <script src="/template/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+    <script src="/template/vendor/popper/umd/popper.min.js"></script>
+    <script src="/template/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/template/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="/template/vendor/common/common.js"></script>
+    <script src="/template/vendor/nanoscroller/nanoscroller.js"></script>
+    <script src="/template/vendor/magnific-popup/jquery.magnific-popup.js"></script>
+    <script src="/template/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+    <!-- Specific Page Vendor -->
+    <script src="/template/vendor/jquery-ui/jquery-ui.js"></script>
+    <script src="/template/vendor/jqueryui-touch-punch/jquery.ui.touch-punch.js"></script>
+    <script src="/template/vendor/jquery-appear/jquery.appear.js"></script>
+    <script src="/template/vendor/bootstrapv5-multiselect/js/bootstrap-multiselect.js"></script>
+    <script src="/template/vendor/jquery.easy-pie-chart/jquery.easypiechart.js"></script>
+    <script src="/template/vendor/flot/jquery.flot.js"></script>
+    <script src="/template/vendor/flot.tooltip/jquery.flot.tooltip.js"></script>
+    <script src="/template/vendor/flot/jquery.flot.pie.js"></script>
+    <script src="/template/vendor/flot/jquery.flot.categories.js"></script>
+    <script src="/template/vendor/flot/jquery.flot.resize.js"></script>
+    <script src="/template/vendor/jquery-sparkline/jquery.sparkline.js"></script>
+    <script src="/template/vendor/raphael/raphael.js"></script>
+    <script src="/template/vendor/morris/morris.js"></script>
+    <script src="/template/vendor/gauge/gauge.js"></script>
+    <script src="/template/vendor/snap.svg/snap.svg.js"></script>
+    <script src="/template/vendor/liquid-meter/liquid.meter.js"></script>
+    <script src="/template/vendor/jqvmap/jquery.vmap.js"></script>
+    <script src="/template/vendor/jqvmap/data/jquery.vmap.sampledata.js"></script>
+    <script src="/template/vendor/jqvmap/maps/jquery.vmap.world.js"></script>
+    <script src="/template/vendor/jqvmap/maps/continents/jquery.vmap.africa.js"></script>
+    <script src="/template/vendor/jqvmap/maps/continents/jquery.vmap.asia.js"></script>
+    <script src="/template/vendor/jqvmap/maps/continents/jquery.vmap.australia.js"></script>
+    <script src="/template/vendor/jqvmap/maps/continents/jquery.vmap.europe.js"></script>
+    <script src="/template/vendor/jqvmap/maps/continents/jquery.vmap.north-america.js"></script>
+    <script src="/template/vendor/jqvmap/maps/continents/jquery.vmap.south-america.js"></script>
+
+    <script src="/template/vendor/select2/js/select2.js"></script>
+    <script src="/template/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="/template/vendor/datatables/media/js/dataTables.bootstrap5.min.js"></script>
+    <script src="/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
+    <script src="/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.html5.min.js"></script>
+    <script src="/template/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.print.min.js"></script>
+    <script src="/template/vendor/datatables/extras/TableTools/JSZip-2.5.0/jszip.min.js"></script>
+    <script src="/template/vendor/datatables/extras/TableTools/pdfmake-0.1.32/pdfmake.min.js"></script>
+    <script src="/template/vendor/datatables/extras/TableTools/pdfmake-0.1.32/vfs_fonts.js"></script>
+
+
+
+
+
+
+
+
+
+    <!-- Theme Base, Components and Settings -->
+    <script src="/template/js/theme.js"></script>
+
+    <!-- Theme Custom -->
+    <script src="/template/js/custom.js"></script>
+
+    <!-- Theme Initialization Files -->
+    <script src="/template/js/theme.init.js"></script>
+
+
+        @RenderSection("scripts", required: false)
+
+
+
+</body>
+</html>

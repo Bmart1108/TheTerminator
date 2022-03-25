@@ -1,0 +1,317 @@
+﻿@model AtlasTracker.Models.Project
+@using AtlasTracker.Models.Enums
+@using AtlasTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+@inject IBTProjectService ProjectService
+@inject UserManager<BTUser> UserManager
+@inject IBTRolesService RoleManager
+@inject IBTTicketHistoryService HistoryService
+
+@*//INJECT HISTORY SERVICE//*@
+
+@{
+    ViewData["Title"] = "Details";
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.Id);
+}
+
+<header class="page-header">
+    <h2>Project Details</h2>
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>Project Details</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
+    </div>
+
+    <div class="page-rightheader ml-md-auto">
+        <div class="d-flex justify-content-end breadcrumb-right pe-5 pt-3">
+            <div class="btn-list">
+                <a class="btn btn-primary" asp-controller="Tickets" asp-action="Create"><i class="feather feather-plus fs-15 my-auto mr-2"></i>Create New Ticket</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<!--End Page header-->
+<!-- Row -->
+
+
+<div class="row pt-4">
+    <div class="col-xl-6 col-md-12 col-lg-12">
+        <div class="card card-featured card-featured-info">
+            <div class="card-header">
+                <h2 class="w-50 fw-bold">Project Name:</h2>
+                <div>
+                    <h3 class="fw-semibold">@Model.Name</h3>
+                </div>
+            </div>           
+            <div class="card-body pt-5">
+                <div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span class="w-50">Project Manager</span>
+                                    </td>
+                                    <td>:</td>
+                                    @if (projectManager != null)
+                                    {
+                                        <td>
+                                            @if (projectManager.AvatarData != null)
+                                            {
+                                                <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(projectManager.AvatarData))" alt="">
+                                            }
+                                            else
+                                            {
+                                                <img class="rounded-circle" style="width:60px;height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="">
+                                            }
+                                            <div>
+                                                <h5>@projectManager.FullName</h5>
+                                                <span>@projectManager.Email</span>
+                                                <p class="text-muted m-b-0">Project Manager</p>
+
+                                            </div>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <img class="rounded-circle" style="width:60px;height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="">
+                                            <div class="wid-u-info">
+                                                <h5 class="text-muted m-b-0">Not Assigned</h5>
+                                                @if (User.IsInRole(nameof(BTRole.Admin)))
+                                                {
+                                                    <span><a asp-action="AssignPM" asp-controller="Projects" asp-route-projectId="@Model.Id" class="btn btn-xs btn-outline-info">Assign PM</a></span>
+                                                }
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>                        
+                                <tr>
+                                    <td>
+                                        <span class="w-50">Start Date</span>
+                                    </td>
+                                    <td>:</td>
+                                    <td>
+                                        <span class="font-weight-semibold">@Model.StartDate.ToString("MMM dd, yyyy")</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="w-50">Deadline</span>
+                                    </td>
+                                    <td>:</td>
+                                    <td>
+                                        <span class="font-weight-semibold">@Model.EndDate.ToString("MMM dd, yyyy")</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="w-50">Priority</span>
+                                    </td>
+                                    <td>:</td>
+                                    <td>
+                                        <span class="font-weight-semibold">@Model.ProjectPriority.Name</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="w-50">Description</span>
+                                    </td>
+                                    <td>:</td>
+                                    <td>
+                                        <span class="font-weight-semibold">@Model.Description</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-md-12 col-lg-12">
+        <div class="card card-featured card-featured-info">
+            <div class="card-header">
+                <h2 class="fw-bold">Project Tickets</h2>
+            </div>
+            <div class="card-body">
+                <div>
+                    <div class="table-responsive">
+                        <table class="table  table-bordered table-striped mb-0" id="datatable-atlas">
+                            <thead>
+                                <tr>
+                                    <th class="border-bottom-0">Title</th>
+                                    <th class="border-bottom-0">Assigned To</th>
+                                    <th class="border-bottom-0">Ticket Type</th>
+                                    <th class="border-bottom-0">Ticket Priority</th>
+                                    <th class="border-bottom-0">Created Date</th>
+                                    <th class="border-bottom-0">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Ticket ticket in Model.Tickets.OrderByDescending(d => d.Created))
+                                {
+                                    <tr>
+                                        <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a> </td>
+                                        <td>
+                                            @if (ticket.DeveloperUserId != null)
+                                            {
+                                                @ticket.DeveloperUser?.FullName
+                                            }
+                                            else
+                                            {
+                                                if (User.IsInRole(nameof(BTRole.Admin)) || User.IsInRole(nameof(BTRole.ProjectManager)))
+                                                {
+                                                    <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-ticketId="@ticket.Id">Assign Dev</a>
+                                                }
+                                            }
+                                        </td>
+                                        @if (ticket.TicketStatus!.Name == nameof(BTTicketStatus.New))
+                                        {
+                                            <td><span class="badge bg-success">@ticket.TicketStatus.Name </span></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="badge bg-primary">@ticket.TicketStatus.Name </span></td>
+                                        }
+                                        <td><span class="badg">@ticket.TicketPriority!.Name </span></td>
+                                        <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
+                                        <td>
+                                            <a class="far fa-lg fa-eye p-2" style="color: green" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"></a>
+                                            @if (ticket.DeveloperUserId == btUser.Id || ticket.OwnerUserId == btUser.Id || (projectManager?.Id == btUser.Id) || User.IsInRole(nameof(BTRole.Admin)))
+                                            {
+                                                <a class="fas fa-lg fa-pencil-alt p-2" style="color: tan" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id"></a>
+                                            }
+                                            @if (User.IsInRole("Admin") || (projectManager?.Id == btUser.Id))
+                                            {
+                                                <a class="far fa-lg fa-trash-alt p-2" style="color: red" asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id"></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-md-12 col-lg-12 mt-3">
+        <div class="card card-featured card-featured-info">
+            <div class="card-header">
+                <div class="float-end">
+                    @if (User.IsInRole(nameof(BTRole.Admin)) || (btUser.Id == projectManager?.Id))
+                    {
+                        <a class="btn btn-xs alert-primary py-2" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-projectId="@Model.Id">Manage Team</a>
+                    }
+                </div>
+                <h3>Current Team</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            @foreach (BTUser member in await ProjectService.GetAllProjectMembersExceptPMAsync(Model.Id))
+                            {
+
+                                <tr class="">
+                                    <td>
+                                        <div class="media">
+                                            @if (member.AvatarData != null)
+                                            {
+                                                <img class="" src="data:image/*;base64,@(Convert.ToBase64String(member.AvatarData))" alt="" />
+                                            }
+                                            else
+                                            {
+                                                <img class="" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="">@member.FullName</span>
+                                        <span class="" style="font-size:x-small">[@((await UserManager.GetRolesAsync(member)).FirstOrDefault())]</span>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-md-12 col-lg-12">
+        <div class="card card-featured card-featured-info mt-3">
+            <div class="card-header">
+                <h3>Project Activity</h3>
+            </div>
+            <div class="card-body">
+                <div class="card m-1 p-2">
+                    <div style="overflow-y:auto;height:300px;background-color:white">
+                        @* Project Activity loop *@
+                        @if (!(await HistoryService.GetProjectTicketsHistoriesAsync(Model.Id, btUser.CompanyId)).Any())
+                        {
+                            <span>No Ticket History</span>
+                        }
+                        @foreach (TicketHistory history in await HistoryService.GetProjectTicketsHistoriesAsync(Model.Id, btUser.CompanyId))
+                        {
+                            <span class="date">@history.Created.ToString("dd MMM yyyy")</span>
+                            <h6>@history.Description</h6>
+                            <span>By: <a href="" title="@history.User!.FullName">@history.User.FullName</a></span>
+                            @if (history.PropertyName == "")
+                            {
+                                <div class="">
+                                    <p>The ticket <b>@history.PropertyName</b>  was edited</p>
+                                    <p>@($"Previous {history.PropertyName}:  {history.OldValue}")</p>
+                                    <p>@($"Current {history.PropertyName}:  {history.NewValue}")</p>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+<script>
+
+
+    var datatableInit = function() {
+
+        $('#datatable-atlas').dataTable({
+
+        });
+
+    };
+
+    $(function() {
+        datatableInit();
+    });
+
+</script>
+
+
+}
+
+
+
+

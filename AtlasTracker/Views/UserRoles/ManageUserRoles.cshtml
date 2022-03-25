@@ -1,0 +1,59 @@
+﻿@model IEnumerable<AtlasTracker.Models.ViewModels.ManageUserRolesViewModel>
+
+    <header class="page-header">
+    <h2>Manage Member Roles</h2>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>Manage Member Roles</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            @foreach (var member in Model)
+            {               
+            
+            <form method="post" asp-action="AssignDeveloper" asp-controller="Tickets">
+                <div class="card card-featured card-featured-info">
+                    <div class="card-header">                        
+                        <p style="font-size:large">This form displays the current roles assigned to the user: <strong style="font-size:large" class="text-info">@member.BTUser.FullName</strong>.
+                        Use the dropdown to select the roles this user should be assigned.
+                        Once roles are selected, click "Assign Roles" to submit the form.</p>
+                    </div>
+                </div>
+                <div class="card-body mb-4">
+                     <hr />
+                    <form asp-action="ManageUserRoles" asp-controller="UserRoles" method=post>
+                        <input type="hidden" asp-for="@member.BTUser.Id" />
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <label asp-for="@member.Roles" class="custom-label"><strong style="font-size:large">Roles for: </strong><strong style="color:deepskyblue; font-size:large">@member.BTUser.FullName</strong>  </label>
+                                    <select style="height:150px; font-size:large" asp-for="@member.SelectedRoles" class="fw-semibold form-control" asp-items="@member.Roles" multiple>
+                                    </select>
+                                    <hr />
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Assign Role" class="btn btn-info" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </form>
+             }
+        </div>       
+    </div>
+</div>

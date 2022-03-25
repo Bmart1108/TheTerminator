@@ -1,0 +1,125 @@
+﻿@using AtlasTracker.Models.Enums
+@model IEnumerable<AtlasTracker.Models.Ticket>
+
+@{
+    ViewData["Title"] = "AllTickets";
+}
+<header class="page-header">
+    <h2>All Tickets</h2>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>All Tickets</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
+    </div>
+</header>
+
+
+
+<div class="card card-featured card-featured-info">
+    <div class="card-header">
+        <h2 class="fw-bold">All Tickets</h2>
+    </div>
+    <div class="card-body">
+        <div>
+            <div class="table-responsive">
+                <table class="table  table-bordered table-striped mb-0" id="datatable-atlas">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Created)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Project)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TicketPriority)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TicketStatus)
+                            </th>
+                            <th>
+                                Developer
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Created)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Project.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
+                                </td>
+                                <td>
+                                    <a class="far fa-lg fa-eye p-2" style="color: green" asp-action="Details" asp-route-id="@item.Id"></a>
+                                    @if (User.IsInRole(nameof(BTRole.Admin)))
+                                    {
+                                        <a class="fas fa-lg fa-pencil-alt p-2" style="color: tan" asp-action="Edit" asp-route-id="@item.Id"></a>
+                                        <a class="far fa-lg fa-trash-alt p-2" style="color: red" asp-action="Archive" asp-route-id="@item.Id"></a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+<script>
+
+
+    var datatableInit = function() {
+
+        $('#datatable-atlas').dataTable({
+
+        });
+
+    };
+
+    $(function() {
+        datatableInit();
+    });
+
+</script>
+
+
+}
+
+
+

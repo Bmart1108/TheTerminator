@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Project>
+
+
+<div class="row mt-5">
+    <div class="col-xl-10 col-md-12 mx-auto">
+        @if (Model.Count() != 0)
+        {
+            <div class="card">
+                <div class="card-header border-bottom-0">
+                    <h3 class="card-title">Project List</h3>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table id="details-datatable" class="table table-hover card-table table-vcenter text-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                    <th scope="col">Team</th>
+                                    <th scope="col">Ticket Count</th>
+                                    <th scope="col">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Project project in Model)
+                                {
+                                    if (project.Archived == false)
+                                    {
+                                        <tr>
+                                            <th scope="row">
+                                                @project.Name
+                                            </th>
+                                            <td>
+                                                @project.StartDate.ToString("MMM dd, yyyy")
+                                            </td>
+                                            <td>
+                                                @project.EndDate.ToString("MMM dd, yyyy")
+                                            </td>
+                                            <td>
+                                                <div class="avatar-list avatar-list-stacked">
+                                                    @foreach (BTUser member in project.Members)
+                                                    {
+                                                        <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" width="28" height="28" class="rounded-circle">
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @project.Tickets.Count
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id"><i class="far fa-lg fa-eye p-2" style="color: green"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center mt-5">
+                <h1>Hmmm, looks like you aren't assigned to any projects yet</h1>               
+            </div>
+        }
+
+    </div>
+</div>

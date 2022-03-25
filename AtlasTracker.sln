@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtlasTracker", "AtlasTracker\AtlasTracker.csproj", "{A96DB1CB-9A36-4433-9C9C-900FA0E47468}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A96DB1CB-9A36-4433-9C9C-900FA0E47468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A96DB1CB-9A36-4433-9C9C-900FA0E47468}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A96DB1CB-9A36-4433-9C9C-900FA0E47468}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A96DB1CB-9A36-4433-9C9C-900FA0E47468}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ABC7AFAA-EFCA-4620-B703-F0E6CD92865B}
+	EndGlobalSection
+EndGlobal
