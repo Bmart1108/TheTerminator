@@ -183,7 +183,7 @@ namespace AtlasTracker.Controllers
                         await _notificationService.SendEmailNotificationAsync(devNotification, "Ticket Updated");
                     }
 
-                return RedirectToAction(nameof(Details));
+                return RedirectToAction(nameof(Details), new {Id = model.Ticket.Id});
             }
 
             return RedirectToAction(nameof(AssignDeveloper), new { ticketId = model.Ticket!.Id });
