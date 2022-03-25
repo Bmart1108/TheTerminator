@@ -114,7 +114,7 @@ namespace AtlasTracker.Controllers
 
                 //Customize company name here
                 Company btCompany = await _companyinfoservice.GetCompanyInfoByIdAsync(companyId);
-                string subject = $"The Terminiator: {btCompany.Name}";
+                string subject = $"The Terminator: {btCompany.Name} invite";
 
                 await _emailservice.SendEmailAsync(destination, subject, body);
 
