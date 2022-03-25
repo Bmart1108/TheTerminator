@@ -1,23 +1,46 @@
 ﻿@model AtlasTracker.Models.Invite
 
-<div class="panel card-sign">
-    <div class="card-title mt-3 text-center">
-        <h2 class="title text-uppercase font-weight-bold m-0"> Invite</h2>
+
+
+<header class="page-header">
+    <p style="font-size:x-large;color:deepskyblue" class="px-2 pt-3">Welcome @Model.InviteeFirstName @Model.InviteeLastName! | Company Name: @Model.Company!.Name!</p>
+
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a asp-action="Dashboard" asp-controller="Home">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>Your Invitation</span></li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"></a>
     </div>
-    <div class="header">
-        <h3>
-            <span class="clearfix title">
-                <span class="number">Welcome</span><br />
-                <span>@Model.InviteeFirstName! @Model.InviteeLastName!</span> <br>
-            </span>
-        </h3>
-        <h5><span>Company Name: @Model.Company!.Name! </span></h5>
-    </div>
-    <div class="card-body">
-        <p>
-            @Model.Invitor!.FullName has invited you to collaborate on the @Model.Project!.Name project.
-            <br /><br /> Click the "JOIN" button below to register with the company and begin entering tickets.
-        </p>
-        <a class="btn btn-primary btn-lg btn-block" asp-area="Identity" asp-page="/Account/RegisterByInvite" asp-route-id="@Model.Id" asp-route-companyId="@Model.CompanyId"><i class="bi bi-box-arrow-in-right"></i> <span>JOIN</span></a>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-featured card-featured-info">
+                <div class="card-header">
+                    <h2>Invite</h2>
+                </div>
+            </div>
+            <div class="card-body">
+                <p style="font-size:large">
+                    @Model.Invitor!.FullName has invited you to collaborate on the @Model.Project!.Name project.
+                    <br /><br /> Click the "JOIN" button below to register with the company and begin entering tickets.
+                </p>
+                <a class="btn btn-primary btn-lg btn-block" asp-area="Identity" asp-page="/Account/RegisterByInvite" asp-route-id="@Model.Id" asp-route-companyId="@Model.CompanyId"><i class="bi bi-box-arrow-in-right"></i> <span>JOIN</span></a>
+            </div>
+        </div>
     </div>
 </div>
+
+
+
+
+
