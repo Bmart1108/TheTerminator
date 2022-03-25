@@ -145,9 +145,7 @@ namespace AtlasTracker.Controllers
 
         [HttpPost]
         public async Task<IActionResult> AssignDeveloper(AssignDeveloperViewModel model)
-        {
-
-            
+        {            
 
             if (model.DeveloperId != null)
             {
